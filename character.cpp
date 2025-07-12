@@ -26,30 +26,24 @@ public:
         this->spd = speed;
     }
 
-    void takeDamagePhys(short dmg, short adv, attackTypes type) {
-        short effectiveDamage = this->calculateDamage(dmg, adv, type);
-        hp -= effectiveDamage;
-        if (hp < 0) hp = 0;
-    }
-
-    void takeDamageSp(short dmg, short adv, attackTypes type) {
+    void takeDamageNonCounter(short dmg, short adv, attackTypes type) {
+        /*Handle damage taken from phys + spcl attacks*/
         short effectiveDamage = this->calculateDamage(dmg, adv, type);
         hp -= effectiveDamage;
         if (hp < 0) hp = 0;
     }
 
     void takeDamageCounter(short dmg, short adv, attackTypes type) {
+        /*Handle damage when using a counterattack*/
         short effectiveDamage = this->calculateDamage(dmg, adv, type);
+
     }
 
     short calculateDamage(short dmg, short adv, attackTypes type) {
+        /*Calculate incoming damage*/
         short effectiveDamage;
-        if(type == PHYSICAL){
-            effectiveDamage = dmg / def;
-        }
-        else {
-            effectiveDamage = dmg / spdef;
-        }
+        if(type == PHYSICAL) effectiveDamage = dmg / def;
+        else effectiveDamage = dmg / spdef;
         switch (adv){
             case -1:
                 effectiveDamage = effectiveDamage * 0.67;
@@ -66,10 +60,7 @@ public:
 
     void attack(character& target, short power, enum attackTypes type, short adv) {
         if(type == PHYSICAL){
-            target.takeDamagePhys(atk * power, adv, type);
-        }
-        else{
-            target.takeDamageSp(spatk * power, adv, type);
+            target.takeDamageNonCounter(atk * power, adv, type);
         }
     }
 
