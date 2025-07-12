@@ -3,7 +3,8 @@
 
 enum attackTypes{
     PHYSICAL,
-    SPECIAL
+    SPECIAL,
+    COUNTER
 };
 
 #endif 

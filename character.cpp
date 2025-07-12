@@ -26,25 +26,30 @@ public:
         this->spd = speed;
     }
 
-    void takeDamagePhys(short dmg, short adv) {
-        short effectiveDamage = dmg / def;
-        switch (adv){
-            case -1:
-                effectiveDamage = effectiveDamage * 1.33;
-                break;
-            case 0:
-                break;
-            case 1:
-                effectiveDamage = effectiveDamage * 0.67;
-                break;
-        }
-        if (effectiveDamage < 0) effectiveDamage = 0;
+    void takeDamagePhys(short dmg, short adv, attackTypes type) {
+        short effectiveDamage = this->calculateDamage(dmg, adv, type);
         hp -= effectiveDamage;
         if (hp < 0) hp = 0;
     }
 
-    void takeDamageSp(short dmg, short adv) {
-        short effectiveDamage = dmg / spdef;
+    void takeDamageSp(short dmg, short adv, attackTypes type) {
+        short effectiveDamage = this->calculateDamage(dmg, adv, type);
+        hp -= effectiveDamage;
+        if (hp < 0) hp = 0;
+    }
+
+    void takeDamageCounter(short dmg, short adv, attackTypes type) {
+        short effectiveDamage = this->calculateDamage(dmg, adv, type);
+    }
+
+    short calculateDamage(short dmg, short adv, attackTypes type) {
+        short effectiveDamage;
+        if(type == PHYSICAL){
+            effectiveDamage = dmg / def;
+        }
+        else {
+            effectiveDamage = dmg / spdef;
+        }
         switch (adv){
             case -1:
                 effectiveDamage = effectiveDamage * 0.67;
@@ -56,16 +61,15 @@ public:
                 break;
         }
         if (effectiveDamage < 0) effectiveDamage = 0;
-        hp -= effectiveDamage;
-        if (hp < 0) hp = 0;
+        return effectiveDamage;
     }
 
     void attack(character& target, short power, enum attackTypes type, short adv) {
         if(type == PHYSICAL){
-            target.takeDamagePhys(atk * power, adv);
+            target.takeDamagePhys(atk * power, adv, type);
         }
         else{
-            target.takeDamageSp(spatk * power, adv);
+            target.takeDamageSp(spatk * power, adv, type);
         }
     }
 
